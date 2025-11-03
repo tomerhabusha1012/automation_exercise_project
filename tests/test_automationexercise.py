@@ -80,3 +80,39 @@ class TestAutomationTask:
         assert logged_in_element.is_displayed()
         # Verify the username 'hagai tregerman' appears in the logged in message
         assert "hagai tregerman" in logged_in_element.text.lower()
+
+    def test_validate_incorrect_login(self, driver):
+        """
+        Test to Login User with incorrect email and password.
+
+        """
+        # Navigate to the login page
+        driver.get(self.base_url + "login")
+
+        # Wait for the email input field to be visible and locate it
+        email_input_element = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.NAME, "email"))
+        )
+        # Enter the email address
+        email_input_element.send_keys("hagai.tregerman@gmail.com")
+
+        # Wait for the password input field to be visible and locate it
+        password_input_element = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.NAME, "password"))
+        )
+        # Enter the password
+        password_input_element.send_keys("123456789")
+
+        # Wait for the login button to be visible and locate it
+        login_button_element = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//button[text()='Login']"))
+        )
+        # Click the login button to submit credentials
+        login_button_element.click()
+
+        # Wait for the 'Logged in as' element to be visible after successful login
+        error_message_element = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//p[text()='Your email or password is incorrect!']"))
+        )
+        # Verify the 'Logged in as' element is displayed
+        assert error_message_element.is_displayed()
